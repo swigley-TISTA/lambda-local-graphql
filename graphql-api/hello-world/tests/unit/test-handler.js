@@ -4,6 +4,7 @@ const app = require('../../app.js');
 const chai = require('chai');
 require('dotenv').config();
 console.log("Loading node envoronment: " + JSON.stringify(process.env.NODE_ENV));
+
 const expect = chai.expect;
 var event, context;
 

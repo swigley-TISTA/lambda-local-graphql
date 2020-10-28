@@ -10,3 +10,5 @@ terraform.tfstate
 .aws-sam
 graphql-api.zip
 dist/
+.vscode
+.idea
