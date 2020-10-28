@@ -7,8 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    
-    "test": "mocha graphql-api/hello-world/tests/unit/test-handler.js",
+    "test": "mocha graphql-api/hello-world/tests/unit/",
     "build": "cd graphql-api && sam build",
     "invoke": "cd graphql-api && sam local invoke",
     "package":  "cd graphql-api/.aws-sam/build/HelloWorldFunction && zip -r ../../../../graphql-api.zip *"

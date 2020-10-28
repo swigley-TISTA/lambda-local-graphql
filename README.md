@@ -4,7 +4,7 @@ A node.js example showing how to develop a GraphQL API locally for AWS Lambda an
 
 1. Install [AWS SAM CLI tool](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
 
-npm run-script build
+To build, run npm run-script build.
 
 ```
 > npm run-script build                         
@@ -34,7 +34,7 @@ Waiting for the debugger to disconnect...
 
 ```
 
-npm run-script invoke
+To perform a test invocation, run npm run-script invoke.
 
 ```
 
@@ -59,7 +59,7 @@ Waiting for the debugger to disconnect...
 
 ```
 
-npm run-script test
+To test, run npm run-script test.
 
 ```
 
@@ -84,7 +84,7 @@ Loading node envoronment: "development"
 
 ```
 
-npm run-script package
+Run npm run-script package
 
 ```
 
@@ -103,5 +103,197 @@ updating: node_modules/string.prototype.trimend/test/ (stored 0%)
 ...
 updating: package.json (deflated 42%)
 Waiting for the debugger to disconnect...
+
+```
+
+Run terragrunt init and terragrunt plan from the component directory for the environment.
+
+```
+> cd terraform/prod/lambda
+terraform/prod/lambda> terragrunt init
+terraform/prod/lambda> terragrunt plan
+
+[terragrunt] 2020/10/28 17:36:10 Running command: terraform plan
+Acquiring state lock. This may take a few moments...
+Refreshing Terraform state in-memory prior to plan...
+The refreshed state will be used to calculate this plan, but will not be
+persisted to local or remote state storage.
+
+
+------------------------------------------------------------------------
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_iam_role.iam_for_lambda will be created
+  + resource "aws_iam_role" "iam_for_lambda" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "lambda.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "HelloWorld-LambdaRole-prod"
+      + path                  = "/"
+      + unique_id             = (known after apply)
+    }
+
+  # aws_lambda_function.basic-lambda-function will be created
+  + resource "aws_lambda_function" "basic-lambda-function" {
+      + arn                            = (known after apply)
+      + filename                       = "/Users/samwigley/Projects/github.com/swigley-TISTA/lambda-local-graphql/terraform/prod/lambda/../../../dist/graphql-api.zip"
+      + function_name                  = "HelloWorld-prod"
+      + handler                        = "exports.lambdaHandler"
+      + id                             = (known after apply)
+      + invoke_arn                     = (known after apply)
+      + last_modified                  = (known after apply)
+      + memory_size                    = 128
+      + publish                        = false
+      + qualified_arn                  = (known after apply)
+      + reserved_concurrent_executions = -1
+      + role                           = (known after apply)
+      + runtime                        = "nodejs12.x"
+      + source_code_hash               = "Jz3imRqooPhEXG5j0f9lGtYgNc5mjv4cM4RPxnyk0Vs="
+      + source_code_size               = (known after apply)
+      + timeout                        = 3
+      + version                        = (known after apply)
+
+      + environment {
+          + variables = {
+              + "foo" = "bar"
+            }
+        }
+
+      + tracing_config {
+          + mode = (known after apply)
+        }
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + this_lambda_arn = (known after apply)
+
+------------------------------------------------------------------------
+
+Note: You didn't specify an "-out" parameter to save this plan, so Terraform
+can't guarantee that exactly these actions will be performed if
+"terraform apply" is subsequently run.
+
+Releasing state lock. This may take a few moments...
+
+```
+
+Run terragrunt apply.
+
+```
+> terragrunt apply
+
+Acquiring state lock. This may take a few moments...
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_iam_role.iam_for_lambda will be created
+  + resource "aws_iam_role" "iam_for_lambda" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "lambda.amazonaws.com"
+                        }
+                      + Sid       = ""
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "HelloWorld-LambdaRole-prod"
+      + path                  = "/"
+      + unique_id             = (known after apply)
+    }
+
+  # aws_lambda_function.basic-lambda-function will be created
+  + resource "aws_lambda_function" "basic-lambda-function" {
+      + arn                            = (known after apply)
+      + filename                       = "/Users/samwigley/Projects/github.com/swigley-TISTA/lambda-local-graphql/terraform/prod/lambda/../../../dist/graphql-api.zip"
+      + function_name                  = "HelloWorld-prod"
+      + handler                        = "exports.lambdaHandler"
+      + id                             = (known after apply)
+      + invoke_arn                     = (known after apply)
+      + last_modified                  = (known after apply)
+      + memory_size                    = 128
+      + publish                        = false
+      + qualified_arn                  = (known after apply)
+      + reserved_concurrent_executions = -1
+      + role                           = (known after apply)
+      + runtime                        = "nodejs12.x"
+      + source_code_hash               = "Jz3imRqooPhEXG5j0f9lGtYgNc5mjv4cM4RPxnyk0Vs="
+      + source_code_size               = (known after apply)
+      + timeout                        = 3
+      + version                        = (known after apply)
+
+      + environment {
+          + variables = {
+              + "foo" = "bar"
+            }
+        }
+
+      + tracing_config {
+          + mode = (known after apply)
+        }
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + this_lambda_arn = (known after apply)
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+aws_iam_role.iam_for_lambda: Creating...
+aws_iam_role.iam_for_lambda: Creation complete after 1s [id=HelloWorld-LambdaRole-prod]
+aws_lambda_function.basic-lambda-function: Creating...
+aws_lambda_function.basic-lambda-function: Still creating... [10s elapsed]
+aws_lambda_function.basic-lambda-function: Creation complete after 16s [id=HelloWorld-prod]
+
+Apply complete! Resources: 2 added, 0 changed, 0 destroyed.
+Releasing state lock. This may take a few moments...
+
+Outputs:
+
+this_lambda_arn = arn:aws:lambda:us-east-2:357771246612:function:HelloWorld-prod
 
 ```
