@@ -1,0 +1,12 @@
+node_modules/
+package-lock.json
+.env
+account.hcl
+.terraform
+.terragrunt-cache
+terraform.tfstate
+*.code-workspace
+*.idea
+.aws-sam
+graphql-api.zip
+dist/

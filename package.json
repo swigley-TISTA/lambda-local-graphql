@@ -1,0 +1,22 @@
+{
+  "name": "lambda-local-graphql",
+  "version": "1.0.0",
+  "description": "A node.js example showing how to develop a GraphQL API locally for AWS Lambda and deploy with terraform.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test/index.test.js",
+    "unit-test": "mocha graphql-api/hello-world/tests/unit/test-handler.js",
+    "build": "cd graphql-api && sam build",
+    "invoke": "cd graphql-api && sam local invoke",
+    "package":  "cd graphql-api/.aws-sam/build/HelloWorldFunction && zip -r ../../../../graphql-api.zip *"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "mocha": "^8.2.0"
+  }
+}
