@@ -28,7 +28,7 @@ provider "aws" {
 }
 
 resource "aws_iam_role" "iam_for_lambda" {
-  name = "iam_for_lambda"
+  name = "${var.function_name}-LambdaRole-${var.env}"
 
   assume_role_policy = <<EOF
 {
@@ -49,7 +49,7 @@ EOF
 
 resource "aws_lambda_function" "basic-lambda-function" {
   filename      = var.dist_package
-  function_name = var.function_name
+  function_name = "${var.function_name}-${var.env}"
   role          = aws_iam_role.iam_for_lambda.arn
   handler       = var.handler
 
