@@ -1,6 +1,8 @@
 // const axios = require('axios')
 // const url = 'http://checkip.amazonaws.com/';
 let response;
+require('dotenv').config();
+console.log("Loading node envoronment: " + JSON.stringify(process.env.NODE_ENV));
 
 /**
  *
