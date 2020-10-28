@@ -56,7 +56,7 @@ resource "aws_lambda_function" "basic-lambda-function" {
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
   #source_code_hash = "${base64sha256(file("../../../dist/graphql-api.zip"))}"
-  #source_code_hash = filebase64sha256(var.dist_package)
+  source_code_hash = filebase64sha256(var.dist_package)
 
   runtime = "nodejs12.x"
 
