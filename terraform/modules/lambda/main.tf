@@ -13,6 +13,11 @@ variable "function_name" {
   description = "The name of the Lambda function."
 }
 
+variable "handler" {
+  type = string
+  description = "The name of the Lambda function handler."
+}
+
 provider "aws" {
   region = var.aws_region
 }
@@ -38,15 +43,15 @@ EOF
 }
 
 resource "aws_lambda_function" "basic-lambda-function" {
-  filename      = "../../dist/graphql-api.zip"
+  filename      = "../../../dist/graphql-api.zip"
   function_name = var.function_name
   role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "exports.handler"
+  handler       = var.handler
 
   # The filebase64sha256() function is available in Terraform 0.11.12 and later
   # For Terraform 0.11.11 and earlier, use the base64sha256() function and the file() function:
   # source_code_hash = "${base64sha256(file("lambda_function_payload.zip"))}"
-  source_code_hash = filebase64sha256("../../dist/graphql-api.zip")
+  #source_code_hash = filebase64sha256("../../../dist/graphql-api.zip")
 
   runtime = "nodejs12.x"
 
