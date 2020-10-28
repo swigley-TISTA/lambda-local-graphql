@@ -23,7 +23,8 @@ terraform {
 
 inputs = {
   env = local.env
-  handler = "exports.test"
-  function_name = "test.function"
+  handler = "exports.lambdaHandler"
+  function_name = "HelloWorld"
+  dist_package = "${get_terragrunt_dir()}/../../../dist/graphql-api.zip"
 
 }
