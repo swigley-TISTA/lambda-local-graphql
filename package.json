@@ -9,7 +9,8 @@
   "scripts": {
     "test": "mocha graphql-api/hello-world/tests/unit/",
     "build": "cd graphql-api && sam build",
-    "invoke": "cd graphql-api && sam local invoke",
+    "invoke": "cd graphql-api && sam local invoke -e events/event.json HelloWorldFunction",
+    "start-api": "cd graphql-api && sam local start-api",
     "package":  "cd graphql-api/.aws-sam/build/HelloWorldFunction && zip -r ../../../../graphql-api.zip *"
   },
   "author": "",

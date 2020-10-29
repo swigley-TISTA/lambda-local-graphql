@@ -1,6 +1,6 @@
 # AWS Lambda Local API Development
 
-A node.js example showing how to develop a GraphQL API locally for AWS Lambda and deploy with terraform.
+A node.js example showing how to develop a GraphQL API locally for AWS Lambda and deploy with terraform.  Inspired by the AWS documentation [Step-through debugging Node.js functions locally](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-using-debugging-nodejs.html), but using Terraform for infrastructure configuration and deployment.
 
 1. Install [AWS SAM CLI tool](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
 
@@ -9,9 +9,6 @@ To build, run npm run-script build.
 ```
 > npm run-script build                         
 Debugger attached.
-
-> lambda-local-graphql@1.0.0 build /Users/samwigley/Projects/github.com/swigley-TISTA/lambda-local-graphql
-> cd graphql-api && sam build
 
 Building codeuri: hello-world/ runtime: nodejs12.x metadata: {} functions: ['HelloWorldFunction']
 Running NodejsNpmBuilder:NpmPack
@@ -41,9 +38,6 @@ To perform a test invocation, run npm run-script invoke.
 > npm run-script invoke                        
 
 Debugger attached.
-
-lambda-local-graphql@1.0.0 invoke /Users/samwigley/Projects/github.com/swigley-TISTA/lambda-local-graphql
-cd graphql-api && sam local invoke
 
 Invoking app.lambdaHandler (nodejs12.x)
 Skip pulling image and use local one: amazon/aws-sam-cli-emulation-image-nodejs12.x:rapid-1.6.2.
@@ -92,8 +86,6 @@ Run npm run-script package
 
 Debugger attached.
 
-lambda-local-graphql@1.0.0 package /Users/samwigley/Projects/github.com/swigley-TISTA/lambda-local-graphql
-cd graphql-api/.aws-sam/build/HelloWorldFunction && zip -r ../../../../graphql-api.zip *
 
 updating: app.js (deflated 53%)
 updating: node_modules/ (stored 0%)
@@ -103,6 +95,28 @@ updating: node_modules/string.prototype.trimend/test/ (stored 0%)
 ...
 updating: package.json (deflated 42%)
 Waiting for the debugger to disconnect...
+
+```
+
+Start local instance of API Gateway for routing requests to the local Lambda function.
+
+```
+
+>npm run-script start-api
+
+Debugger attached.
+
+Mounting HelloWorldFunction at http://127.0.0.1:3000/hello [GET]
+You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. You only need to restart SAM CLI if you update your AWS SAM template
+2020-10-29 12:05:32  * Running on http://127.0.0.1:3000/ (Press CTRL+C to quit)
+
+
+
+> curl -s http://localhost:3000/hello | jq
+{
+  "message": "hello world"
+}
+
 
 ```
 
