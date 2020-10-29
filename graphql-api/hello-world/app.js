@@ -4,6 +4,23 @@ let response;
 require('dotenv').config();
 console.log("Loading node envoronment: " + JSON.stringify(process.env.NODE_ENV));
 
+const {
+    graphql,
+    GraphQLSchema,
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLInt,
+    GraphQLNonNull,
+  } = require('graphql');
+  
+  const AWS = require('aws-sdk');
+  AWS.config.update({
+    region: "us-east-2",
+    endpoint: "http://localhost:8000"
+  });
+  
+  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
 /**
  *
  * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
@@ -17,17 +34,7 @@ console.log("Loading node envoronment: " + JSON.stringify(process.env.NODE_ENV))
  * 
  */
 
-const {
-    graphql,
-    GraphQLSchema,
-    GraphQLObjectType,
-    GraphQLString,
-    GraphQLNonNull,
-  } = require('graphql');
-  
-  const AWS = require('aws-sdk');
-  
-  const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
   
   const promisify = foo => new Promise((resolve, reject) => {
     foo((error, result) => {
@@ -56,7 +63,7 @@ const {
     dynamoDb.update({
       TableName: process.env.DYNAMODB_TABLE,
       Key: { zip },
-      UpdateExpression: 'SET nickname = :nickname',
+      UpdateExpression: 'SET humidity = :humidity, temp = :temp, windspeed = :windspeed, bar_pressure = :bar_pressure',
       ExpressionAttributeValues: {
         ':temp': temp,
         ':windspeed': windspeed,
@@ -86,10 +93,10 @@ const {
       fields: {
         updaetWeather: {
           args: {
-            temp: { name: 'temp', type: new GraphQLNonNull(GraphQLString) },
-            windspeed: { name: 'windspeed', type: new GraphQLNonNull(GraphQLString) },
-            humidity: { name: 'humidity', type: new GraphQLNonNull(GraphQLString) },
-            bar_pressure: { name: 'bar_pressure', type: new GraphQLNonNull(GraphQLString) },
+            temp: { name: 'temp', type: new GraphQLNonNull(GraphQLInt) },
+            windspeed: { name: 'windspeed', type: new GraphQLNonNull(GraphQLInt) },
+            humidity: { name: 'humidity', type: new GraphQLNonNull(GraphQLInt) },
+            bar_pressure: { name: 'bar_pressure', type: new GraphQLNonNull(GraphQLInt) },
           },
           type: GraphQLString,
           resolve: (parent, args) => updaetWeather(args.zip, args.temp, args.windspeed, args.humidity, args.bar_pressure),
