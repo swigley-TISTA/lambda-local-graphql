@@ -53,6 +53,29 @@ Waiting for the debugger to disconnect...
 
 ```
 
+Start local instance of API Gateway for routing requests to the local Lambda function.
+
+```
+
+>npm run-script start-api
+
+Debugger attached.
+
+Mounting HelloWorldFunction at http://127.0.0.1:3000/hello [GET]
+You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. You only need to restart SAM CLI if you update your AWS SAM template
+2020-10-29 12:05:32  * Running on http://127.0.0.1:3000/ (Press CTRL+C to quit)
+
+
+
+> curl -s http://localhost:3000/hello | jq
+{
+  "message": "hello world"
+}
+
+
+```
+
+
 To test, run npm run-script test.
 
 ```
@@ -78,6 +101,8 @@ Loading node envoronment: "development"
 
 ```
 
+
+
 Run npm run-script package
 
 ```
@@ -95,28 +120,6 @@ updating: node_modules/string.prototype.trimend/test/ (stored 0%)
 ...
 updating: package.json (deflated 42%)
 Waiting for the debugger to disconnect...
-
-```
-
-Start local instance of API Gateway for routing requests to the local Lambda function.
-
-```
-
->npm run-script start-api
-
-Debugger attached.
-
-Mounting HelloWorldFunction at http://127.0.0.1:3000/hello [GET]
-You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. You only need to restart SAM CLI if you update your AWS SAM template
-2020-10-29 12:05:32  * Running on http://127.0.0.1:3000/ (Press CTRL+C to quit)
-
-
-
-> curl -s http://localhost:3000/hello | jq
-{
-  "message": "hello world"
-}
-
 
 ```
 
