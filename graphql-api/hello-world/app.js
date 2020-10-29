@@ -59,7 +59,7 @@ const {
     })
     .then(name => `Hello, ${name}.`);
   
-  const updaetWeather = (zip, temp, windspeed, humidity, bar_pressure) => promisify(callback =>
+  const updateWeather = (zip, temp, windspeed, humidity, bar_pressure) => promisify(callback =>
     dynamoDb.update({
       TableName: process.env.DYNAMODB_TABLE,
       Key: { zip },
@@ -91,7 +91,7 @@ const {
     mutation: new GraphQLObjectType({
       name: 'RootMutationType', // an arbitrary name
       fields: {
-        updaetWeather: {
+        updateWeather: {
           args: {
             temp: { name: 'temp', type: new GraphQLNonNull(GraphQLInt) },
             windspeed: { name: 'windspeed', type: new GraphQLNonNull(GraphQLInt) },
@@ -99,7 +99,7 @@ const {
             bar_pressure: { name: 'bar_pressure', type: new GraphQLNonNull(GraphQLInt) },
           },
           type: GraphQLString,
-          resolve: (parent, args) => updaetWeather(args.zip, args.temp, args.windspeed, args.humidity, args.bar_pressure),
+          resolve: (parent, args) => updateWeather(args.zip, args.temp, args.windspeed, args.humidity, args.bar_pressure),
         },
       },
     }),
