@@ -1,14 +1,14 @@
 {
-  "body": "{\"message\": \"hello world\"}",
+  "body": "query { weather(zip: \"38419\") { temp  humidity    windspeed    bar_pressure  }}",
   "resource": "/{proxy+}",
   "path": "/path/to/resource",
   "httpMethod": "POST",
   "isBase64Encoded": false,
   "queryStringParameters": {
-    "foo": "bar"
+    
   },
   "pathParameters": {
-    "proxy": "/path/to/resource"
+    
   },
   "stageVariables": {
     "baz": "qux"

@@ -9,9 +9,9 @@
   "scripts": {
     "test": "mocha graphql-api/hello-world/tests/unit/",
     "build": "cd graphql-api && sam build",
-    "invoke": "cd graphql-api && sam local invoke -e events/event.json HelloWorldFunction",
+    "invoke": "cd graphql-api && sam local invoke -e events/event.json WeatherFunction",
     "start-api": "cd graphql-api && sam local start-api",
-    "package": "cd graphql-api/.aws-sam/build/HelloWorldFunction && zip -r ../../../../graphql-api.zip *"
+    "package": "cd graphql-api/.aws-sam/build/WeatherFunction && zip -r ../../../../graphql-api.zip *"
   },
   "author": "",
   "license": "ISC",
