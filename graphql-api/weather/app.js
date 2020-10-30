@@ -45,42 +45,33 @@ const {
       }
     });
   });
-  
-  const getWeather = zip => promisify(callback =>
-    dynamoDb.get({
-      TableName: "Weather",
-      Key: { zip },
-    }, callback))
-    .then((result) => {
-      if (!result) {
-        return {"err": "no result"};
-      }
-      console.log("getWeather got a result! " + JSON.stringify(result));
-      return result;
-    })
-    .then(weather => `Weather: ${weather}.`);
 
-   
-    var WeatherType = new GraphQLObjectType({
-      name: 'Weather',
-      fields: {
-        zip: { type: GraphQLString },
-        temp: { type: GraphQLInt },
-        windspeed: { type: GraphQLInt },
-        humidity: { type: GraphQLInt },
-        bar_pressure: { type: GraphQLInt },
-        formatted: {
-          type: GraphQLString,
-          resolve(obj) {
-            return obj.zip + ' ' + obj.temp + ' ' + obj.windspeed + ' ' + obj.humidity + ' ' + obj.bar_pressure
-          }
+     
+  var WeatherType = new GraphQLObjectType({
+    name: 'Weather',
+    fields: {
+      zip: { type: GraphQLString },
+      temp: { type: GraphQLInt },
+      windspeed: { type: GraphQLInt },
+      humidity: { type: GraphQLInt },
+      bar_pressure: { type: GraphQLInt },
+      formatted: {
+        type: GraphQLString,
+        resolve(obj) {
+          return obj.zip + ' ' + obj.temp + ' ' + obj.windspeed + ' ' + obj.humidity + ' ' + obj.bar_pressure
         }
       }
-    });
+    }
+  });
+
+
+  const getWeather2 = zip => JSON.stringify({'zip': "30256", "temp": 0})
+    
+  
   
   const updateWeather = (zip, temp, windspeed, humidity, bar_pressure) => promisify(callback =>
     dynamoDb.update({
-      TableName: process.env.DYNAMODB_TABLE,
+      TableName: "Weather",
       Key: { zip },
       UpdateExpression: 'SET humidity = :humidity, temp = :temp, windspeed = :windspeed, bar_pressure = :bar_pressure',
       ExpressionAttributeValues: {
@@ -92,6 +83,7 @@ const {
     }, callback))
     .then(() => weather);
   
+    
   const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
       name: 'RootQueryType', // an arbitrary name
@@ -102,7 +94,7 @@ const {
           type: WeatherType,
           
           // resolve to a greeting message
-          resolve: (parent, args) => getWeather(args.zip),
+          resolve: (parent, args) => getWeather2(args.zip)
         },
       },
     }),
@@ -124,21 +116,47 @@ const {
   });
   
 
-
+/*
+var schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'RootQueryType',
+    fields: {
+      weather: {
+        type: GraphQLString,
+        resolve() {
+          return 'world';
+        },
+      },
+    },
+  }),
+});
+*/
 ////////////
 // We want to make a GET request with ?query=<graphql query>
   // The event properties are specific to AWS. Other providers will differ.
 
 
-exports.lambdaHandler = async (event, context, callback) => {
-  console.log("handler called...");
-  console.log("Event is: " + JSON.stringify(event.body));
-  graphql(schema, event.body.query)
-  .then(
-    result =>  callback(null, { statusCode: 200, body: JSON.stringify(result) }),
-    err =>  callback({"test": test, "err": err})
+  exports.lambdaHandler = async (event, context, callback) => {
     
-  );
-}
+    let response = {};
+    
+    let body = JSON.parse(event.body);
+    console.log("Sending qeury: " + JSON.stringify(body.query));
+    graphql(schema, body.query).then( (result) => {
+      // Prints
+      // {
+      //   data: { hello: "world" }
+      // }
 
-  
+      console.log("Sending result: " + JSON.stringify(result));
+      response = {
+        'statusCode': 200,
+        'body': JSON.stringify({
+            'message': result
+        })
+      }
+      callback(null,response);
+    });
+    
+    return response;
+};
