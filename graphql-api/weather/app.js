@@ -13,6 +13,7 @@ const {
     GraphQLNonNull,
     GraphQLList,
     GraphQLScalarType,
+    GraphQLFloat,
   } = require('graphql');
   
   const AWS = require('aws-sdk');
@@ -53,7 +54,7 @@ const {
       zip: { type: GraphQLString },
       temp: { type: GraphQLInt },
       windspeed: { type: GraphQLInt },
-      humidity: { type: GraphQLInt },
+      humidity: { type: GraphQLFloat },
       bar_pressure: { type: GraphQLInt },
       formatted: {
         type: GraphQLString,
@@ -64,9 +65,35 @@ const {
     }
   });
 
-
-  const getWeather2 = zip => JSON.stringify({'zip': "30256", "temp": 0})
+// this should be better than what we're getting.  The function call sholud be fixed
+//.
+  const testWeather = { "zip": 38419,
+    "temp" : 79,
+    "windspeed" : 44,
+    "humidity" : 0.45,
+    "bar_pressure" : 42
+    };
+  const getWeather2 = zip => testWeather;
     
+  
+
+  const getWeather = (zip) => 
+    promisify(callback => 
+      dynamoDb.query( 
+        { TableName : "Weather",
+          KeyConditionExpression: "#zip = :zip",
+          ExpressionAttributeNames:{
+              "#zip": "zip"
+          },
+          ExpressionAttributeValues: {
+              ":zip": zip
+          }
+        }, callback)
+    ).then( (data) => { 
+
+      ret =  data.Items[0];
+      console.log("GOt data: " + JSON.stringify(ret));
+    });
   
   
   const updateWeather = (zip, temp, windspeed, humidity, bar_pressure) => promisify(callback =>
