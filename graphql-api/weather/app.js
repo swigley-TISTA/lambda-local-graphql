@@ -13,7 +13,7 @@ const {
     GraphQLNonNull,
     GraphQLList,
     GraphQLScalarType,
-    GraphQLFloat,
+    GraphQLFloat
   } = require('graphql');
   
   const AWS = require('aws-sdk');
@@ -23,6 +23,8 @@ const {
   });
   
   const dynamoDb = new AWS.DynamoDB.DocumentClient();
+
+  const weatherController = require('./controllers/weather');
 
 /**
  *
@@ -51,7 +53,7 @@ const {
   var WeatherType = new GraphQLObjectType({
     name: 'Weather',
     fields: {
-      zip: { type: GraphQLString },
+      zip: { type: GraphQLInt },
       temp: { type: GraphQLInt },
       windspeed: { type: GraphQLInt },
       humidity: { type: GraphQLFloat },
@@ -73,42 +75,17 @@ const {
     "humidity" : 0.45,
     "bar_pressure" : 42
     };
-  const getWeather2 = zip => testWeather;
-    
-  
 
-  const getWeather = (zip) => 
-    promisify(callback => 
-      dynamoDb.query( 
-        { TableName : "Weather",
-          KeyConditionExpression: "#zip = :zip",
-          ExpressionAttributeNames:{
-              "#zip": "zip"
-          },
-          ExpressionAttributeValues: {
-              ":zip": zip
-          }
-        }, callback)
-    ).then( (data) => { 
 
-      ret =  data.Items[0];
-      console.log("GOt data: " + JSON.stringify(ret));
-    });
+  const getWeather = async (zip) => await weatherController.find({"zip": zip});
   
   
-  const updateWeather = (zip, temp, windspeed, humidity, bar_pressure) => promisify(callback =>
-    dynamoDb.update({
-      TableName: "Weather",
-      Key: { zip },
-      UpdateExpression: 'SET humidity = :humidity, temp = :temp, windspeed = :windspeed, bar_pressure = :bar_pressure',
-      ExpressionAttributeValues: {
-        ':temp': temp,
-        ':windspeed': windspeed,
-        ':humidity': humidity,
-        ':bar_pressure': bar_pressure
-      },
-    }, callback))
-    .then(() => weather);
+  const updateWeather = (zip, temp, windspeed, humidity, bar_pressure) => {
+    var w1 =  weatherController.create(zip, temp, windspeed, humidity, bar_pressure);
+    console.log("Adding weather: " + JSON.stringify(w1));
+    weatherController.add(w1);
+
+  }
   
     
   const schema = new GraphQLSchema({
@@ -117,11 +94,10 @@ const {
       fields: {
         // the query has a field called 'weather'
         weather: {
-          args: { zip: { name: 'zip', type: new GraphQLNonNull(GraphQLString) } },
+          args: { zip: { name: 'zip', type: new GraphQLNonNull(GraphQLInt) } },
           type: WeatherType,
-          
           // resolve to a greeting message
-          resolve: (parent, args) => getWeather2(args.zip)
+          resolve: async (parent, args) => await getWeather(Number(args.zip))
         },
       },
     }),
@@ -136,28 +112,13 @@ const {
             bar_pressure: { name: 'bar_pressure', type: new GraphQLNonNull(GraphQLInt) },
           },
           type: GraphQLString,
-          resolve: (parent, args) => updateWeather(args.zip, args.temp, args.windspeed, args.humidity, args.bar_pressure),
+          resolve: (parent, args) => updateWeather(args.zip, args.temp, args.windspeed, args.humidity, args.bar_pressure)
         },
       },
     }),
   });
   
 
-/*
-var schema = new GraphQLSchema({
-  query: new GraphQLObjectType({
-    name: 'RootQueryType',
-    fields: {
-      weather: {
-        type: GraphQLString,
-        resolve() {
-          return 'world';
-        },
-      },
-    },
-  }),
-});
-*/
 ////////////
 // We want to make a GET request with ?query=<graphql query>
   // The event properties are specific to AWS. Other providers will differ.
@@ -169,21 +130,8 @@ var schema = new GraphQLSchema({
     
     let body = JSON.parse(event.body);
     console.log("Sending qeury: " + JSON.stringify(body.query));
-    graphql(schema, body.query).then( (result) => {
-      // Prints
-      // {
-      //   data: { hello: "world" }
-      // }
-
-      console.log("Sending result: " + JSON.stringify(result));
-      response = {
-        'statusCode': 200,
-        'body': JSON.stringify({
-            'message': result
-        })
-      }
-      callback(null,response);
-    });
+    
+    
     
     return response;
 };
