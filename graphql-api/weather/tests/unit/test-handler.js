@@ -7,7 +7,7 @@ console.log("Loading node envoronment: " + JSON.stringify(process.env.NODE_ENV))
 
 const expect = chai.expect;
 var event, context;
-
+/*
 describe('Tests index', function () {
     it('verifies successful response', async () => {
         const result = await app.lambdaHandler(event, context)
@@ -23,3 +23,4 @@ describe('Tests index', function () {
         // expect(response.location).to.be.an("string");
     });
 });
+*/
